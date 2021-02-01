@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.11.8
+# v0.12.19
 
 using Markdown
 using InteractiveUtils
@@ -19,7 +19,7 @@ md"_homework 0, version 2_"
 # ╔═╡ 7308bc54-e6cd-11ea-0eab-83f7535edf25
 # edit the code below to set your name and kerberos ID (i.e. email without @mit.edu)
 
-student = (name = "Jazzy Doe", kerberos_id = "jazz")
+student = (name = "Shivam Chitnis", kerberos_id = "shivamchitnis")
 
 # press the ▶ button in the bottom right of this cell to run your edits
 # or use Shift+Enter
@@ -81,7 +81,8 @@ This is because the square root must be between the numbers `x/a` and `a`. Why?
 
 # ╔═╡ bccf0e88-e754-11ea-3ab8-0170c2d44628
 ex_1_1 = md"""
-your answer here
+Case 1: $a^2>x \implies xa^2>x^2 \implies x>x^2/a^2 \implies a>\sqrt{x}>x/a$ \
+Case 2: $a^2<x \implies xa^2<x^2 \implies x<x^2/a^2 \implies a<\sqrt{x}<x/a$
 """ 
 
 # you might need to wait until all other cells in this notebook have completed running. 
@@ -98,8 +99,12 @@ md"### Exercise 1.2
 Write a function newton_sqrt(x) which implements the above algorithm."
 
 # ╔═╡ 4896bf0c-e754-11ea-19dc-1380bb356ab6
-function newton_sqrt(x, error_margin=0.01, a=x / 2) # a=x/2 is the default value of `a`
-	return x # this is wrong, write your code here!
+function newton_sqrt(x, error_margin=0.01, a=x/2)
+	# a=x/2 is the default value of `a`
+	while abs(x-(a^2)) > error_margin
+		a = (a+(x/a))/2
+	end
+	return a
 end
 
 # ╔═╡ 7a01a508-e78a-11ea-11da-999d38785348
@@ -182,7 +187,7 @@ end
 md"Just like the definition above, our `sierpinksi` function is _recursive_: it calls itself."
 
 # ╔═╡ 02b9c9d6-e752-11ea-0f32-91b7b6481684
-complexity = 3
+complexity = 5
 
 # ╔═╡ 1eb79812-e7b5-11ea-1c10-63b24803dd8a
 if complexity == 3 
@@ -216,7 +221,12 @@ area_sierpinski(1) = 0.??
 
 # ╔═╡ ca8d2f72-e7b6-11ea-1893-f1e6d0a20dc7
 function area_sierpinski(n)
-	return 1.0
+	if n==0
+		area = 1.0
+	else 
+		area = 3/4*area_sierpinski(n-1)
+	end
+	return area
 end
 
 # ╔═╡ 71c78614-e7bc-11ea-0959-c7a91a10d481
