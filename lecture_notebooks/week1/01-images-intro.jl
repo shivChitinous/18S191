@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.11.12
+# v0.12.19
 
 using Markdown
 using InteractiveUtils
@@ -183,7 +183,7 @@ end
 # defines a variable called `url`
 # whose value is a string (written inside `"`):
 
-url = "https://i.imgur.com/VGPeJ6s.jpg"  
+url = "https://upload.wikimedia.org/wikipedia/commons/d/d1/Plain_prinia_%28Prinia_inornata_inornata%29.jpg"
 
 # ╔═╡ 6e0fefb6-e8d4-11ea-1f9b-e7a3db40df39
 philip_file = download(url, "philip.jpg")  # download to a local file
@@ -198,13 +198,10 @@ philip
 typeof(philip)
 
 # ╔═╡ c9cd6c04-ebca-11ea-0990-5fa19ff7ed97
-RGBX(0.9, 0.1, 0.1)
+RGBX(0.1, 0.8, 0.9)
 
 # ╔═╡ 0d873d9c-e93b-11ea-2425-1bd79677fb97
 md"##"
-
-# ╔═╡ 6b09354a-ebb9-11ea-2d5a-3b75c5ae7aa9
-
 
 # ╔═╡ 2d6c434e-e93b-11ea-2678-3b9db4975089
 md"##"
@@ -235,7 +232,7 @@ size(philip)
 philip
 
 # ╔═╡ fac550ec-ebca-11ea-337a-dbc16848c617
-philip[1:1000, 1:400]
+reverse(reverse(philip,dims=1),dims=2)
 
 # ╔═╡ 42aa8cfe-e8d5-11ea-3cb9-c365b98e7a8c
 md"
@@ -282,7 +279,7 @@ md"## Getting pieces of an image"
 # ╔═╡ ae260168-e932-11ea-38fd-4f2c6f43e21c
 begin 
 	(h, w) = size(philip)
-	head = philip[(h ÷ 2):h, (w ÷ 10): (9w ÷ 10)]
+	head = philip[(h ÷ 3):h, (w ÷ 5): (8w ÷ 10)]
 	# `÷` is typed as \div <TAB>  -- integer division
 end
 
@@ -363,7 +360,7 @@ md"""## Element-wise operations: "Broadcasting"
 # ╔═╡ b3ea975e-e936-11ea-067d-81339575a3cb
 begin 
 	new_phil2 = copy(new_phil)
-	new_phil2[100:200, 1:100] .= RGB(0, 1, 0)
+	new_phil2[100:200, 1:100] .= RGBX(1, 0, 1)
 	new_phil2
 end
 
@@ -384,22 +381,36 @@ md"## Modifying the whole image at once
 "
 
 # ╔═╡ 31f3605a-e938-11ea-3a6d-29a185bbee31
-function redify(c)
-	return RGB(c.r, 0, 0)
+function greenify(c)
+	return RGB(0, c.g, 0)
 end
 
 # ╔═╡ 2744a556-e94f-11ea-2434-d53c24e59285
 begin
 	color = RGB(0.9, 0.7, 0.2)
 	
-	[color, redify(color)]
+	[color, greenify(color)]
 end
 
 # ╔═╡ 98412a36-e93b-11ea-1954-f1c105c6ed4a
 md"##"
 
 # ╔═╡ 3c32efde-e938-11ea-1ae4-5d88290f5311
-redify.(philip)
+greenify.(philip)
+
+# ╔═╡ de6346ac-6a28-11eb-134a-0f56cf183fca
+md"""
+## Greyscale the image
+"""
+
+# ╔═╡ fbb27770-6a28-11eb-050a-596fc04af21f
+function bnw(c)
+	gr = 0.2989*c.r + 0.5870*c.g + 0.1140*c.b
+	return gr
+end
+
+# ╔═╡ 1c3cdb1e-6a29-11eb-05b5-db8be167b5d9
+RGBX.(bnw.(philip))
 
 # ╔═╡ 4b26e4e6-e938-11ea-2635-6d4fc15e13b7
 md"## Transforming an image
@@ -424,7 +435,21 @@ md"## Experiments come alive with interaction
 md"##"
 
 # ╔═╡ 15ce202e-e939-11ea-2387-93be0ec4cf1f
-@bind repeat_count Slider(1:10, show_value=true)
+@bind repeat_count Slider(1:2:10, show_value=true)
+
+# ╔═╡ 51571570-6a2a-11eb-2f53-49e598f26ecf
+md"""
+Playing with the repeat function:
+"""
+
+# ╔═╡ f70f3388-6a29-11eb-2d30-3522c3e81301
+begin
+	x = [
+		2  0
+		2  2
+	]
+	repeat(x, 2, 1)
+end
 
 # ╔═╡ bf2167a4-e93d-11ea-03b2-cdd24b459ba9
 md"## Summary
@@ -566,7 +591,7 @@ function camera_input(;max_size=200, default_url="https://i.imgur.com/SUmi94P.pn
 <script>
 	// based on https://github.com/fonsp/printi-static (by the same author)
 
-	const span = this.currentScript.parentElement
+	const span = currentScript.parentElement
 	const video = span.querySelector("video")
 	const popout = span.querySelector("button#pop-out")
 	const stop = span.querySelector("button#stop")
@@ -664,7 +689,6 @@ function camera_input(;max_size=200, default_url="https://i.imgur.com/SUmi94P.pn
 """ |> HTML
 end
 
-
 # ╔═╡ 9529bc40-e93c-11ea-2587-3186e0978476
 @bind raw_camera_data camera_input(;max_size=2000)
 
@@ -748,7 +772,6 @@ grant = decimate(process_raw_camera_data(raw_camera_data), 2)
 # ╠═7eff3522-ebca-11ea-1a65-59e66a4e72ab
 # ╠═c9cd6c04-ebca-11ea-0990-5fa19ff7ed97
 # ╟─0d873d9c-e93b-11ea-2425-1bd79677fb97
-# ╠═6b09354a-ebb9-11ea-2d5a-3b75c5ae7aa9
 # ╟─2d6c434e-e93b-11ea-2678-3b9db4975089
 # ╠═2b14e93e-e93b-11ea-25f1-5f565f80e778
 # ╟─0bdc6058-e8d5-11ea-1889-3f706cea7a1f
@@ -787,6 +810,9 @@ grant = decimate(process_raw_camera_data(raw_camera_data), 2)
 # ╠═2744a556-e94f-11ea-2434-d53c24e59285
 # ╟─98412a36-e93b-11ea-1954-f1c105c6ed4a
 # ╠═3c32efde-e938-11ea-1ae4-5d88290f5311
+# ╠═de6346ac-6a28-11eb-134a-0f56cf183fca
+# ╠═fbb27770-6a28-11eb-050a-596fc04af21f
+# ╠═1c3cdb1e-6a29-11eb-05b5-db8be167b5d9
 # ╟─4b26e4e6-e938-11ea-2635-6d4fc15e13b7
 # ╠═41fa85c0-e939-11ea-1ad8-79805a2083bb
 # ╟─c12e0928-e93b-11ea-0922-2b590a99ee89
@@ -795,6 +821,8 @@ grant = decimate(process_raw_camera_data(raw_camera_data), 2)
 # ╟─fa24f4a8-e93b-11ea-06bd-25c9672166d6
 # ╠═15ce202e-e939-11ea-2387-93be0ec4cf1f
 # ╠═cd5721d0-ede6-11ea-0918-1992c69bccc6
+# ╟─51571570-6a2a-11eb-2f53-49e598f26ecf
+# ╠═f70f3388-6a29-11eb-2d30-3522c3e81301
 # ╟─bf2167a4-e93d-11ea-03b2-cdd24b459ba9
 # ╟─5e688928-e939-11ea-0e16-fbc80af390ab
 # ╟─58184d88-e939-11ea-2fc8-73b3476ebe92
