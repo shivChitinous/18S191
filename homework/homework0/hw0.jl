@@ -356,5 +356,5 @@ has area **$(area_sierpinski(n))**
 # ╟─a60a492a-e7bc-11ea-0f0b-75d81ce46a01
 # ╟─b3c7a050-e855-11ea-3a22-3f514da746a4
 # ╟─d3625d20-e6ce-11ea-394a-53208540d626
-# ╟─dfdeab34-e751-11ea-0f90-2fa9bbdccb1e
+# ╠═dfdeab34-e751-11ea-0f90-2fa9bbdccb1e
 # ╟─b923d394-e750-11ea-1971-595e09ab35b5
